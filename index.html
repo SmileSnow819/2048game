@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="logo.png" type="image/x-icon" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+Paaji+2:wght@400..800&family=Bebas+Neue&family=Belanosima:wght@400;600;700&family=Joti+One&family=Oswald:wght@200..700&family=Protest+Strike&family=Reddit+Sans+Condensed:wght@200..900&display=swap"
+      rel="stylesheet"
+    />
+    <title>2048</title>
+  </head>
+  <style>
+    .bacc_block {
+      box-shadow: 5px 5px 3px gray;
+      font-family: 'Oswald', sans-serif;
+    }
+    .game_menu_container {
+      display: flex;
+      justify-content: center;
+    }
+    .game_menu {
+      height: 80px;
+      width: 600px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .game_point {
+      font-family: 'Oswald', sans-serif;
+      box-shadow: 5px 5px 3px gray;
+      margin-left: 15px;
+      height: 60px;
+      width: 120px;
+      color: white;
+      background-color: rgb(167, 141, 116);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      border-radius: 10px;
+      position: relative;
+      cursor: pointer;
+    }
+    .score-increase {
+      position: absolute;
+      left: 50%;
+      color: #ffcc00;
+      font-size: 24px;
+      font-weight: bold;
+      opacity: 1;
+      animation: floatUp 1s ease-out forwards;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(-50%) translateY(-50px);
+        opacity: 0;
+      }
+    }
+    .game_point span {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 800;
+      transition: color 0.3s ease-out, transform 0.3s ease-out;
+    }
+  </style>
+  <body>
+    <div class="game_menu_container">
+      <div class="game_menu">
+        <div class="game_point" class="score-container">
+          分数<span id="points" style="font-weight: 800"> 0 </span>
+        </div>
+        <div class="game_point">
+          步数<span id="total_step" style="font-weight: 800"> 0 </span>
+        </div>
+        <div class="game_point" id="initializationGame">
+          <span style="font-weight: 800"> 再来一局 </span>
+        </div>
+        <div class="game_point" id="AI_Test">
+          <span style="font-weight: 800"> AI </span>
+        </div>
+      </div>
+    </div>
+    <div id="game-container" style="position: relative; margin: 0 auto"></div>
+    <script src="Untils.js"></script>
+    <script src="Tests.js"></script>
+    <script src="Model.js"></script>
+    <script src="View.js"></script>
+    <script src="Controller.js"></script>
+    <script src="Agent.js"></script>
+  </body>
+</html>
