@@ -21,7 +21,7 @@ const NUMBER_COLOR = 'rgb(119,110,101)';
 let container = document.getElementById('game-container');
 let pointBlock = document.getElementById('points');
 let initializationGame = document.getElementById('initializationGame');
-let totolStep = document.getElementById('total_step');
+let totolStep = document.getElementById('total-step');
 
 let game = new Game();
 let view = new View(container, game);

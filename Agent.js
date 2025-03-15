@@ -61,9 +61,9 @@ class GameAgent {
     for (let i = 0; i < depth; i++) {
       for (let currentGameEvaluation of queue) {
         currentGameEvaluation.evaluateNextStep();
-        for (let cmd in g.children) {
+        for (let cmd in currentGameEvaluation.children) {
           if (currentGameEvaluation.children[cmd]) {
-            nextQueue.push(g.children[cmd]);
+            nextQueue.push(currentGameEvaluation.children[cmd]);
           }
         }
       }

@@ -22,6 +22,8 @@ class Game {
       this.data.push(temp);
     }
     //初始有两个BLOCK
+    totolStep.innerHTML = this.step;
+    pointBlock.innerHTML = this.points;
     this.generateNewBlock();
     this.generateNewBlock();
   }

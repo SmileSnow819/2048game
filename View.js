@@ -78,7 +78,7 @@ class View {
   //画背景格子
   drawBackgroundBlock(i, j, color) {
     const block = document.createElement('div');
-    block.className = 'bacc_block';
+    block.className = 'bacc-block';
     block.style.position = 'absolute';
     block.style.zIndex = 3;
     block.style.width = BLOCK_WIDTH + 'px';
