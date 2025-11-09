@@ -15,7 +15,7 @@
 步骤 1: 克隆或下载项目
 
 # 如果使用 Git
-git clone <项目仓库地址>
+git clone https://github.com/SmileSnow819/2048game
 # 否则，请直接下载项目 zip 文件并解压
 
 
