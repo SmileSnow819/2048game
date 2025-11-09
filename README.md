@@ -6,7 +6,7 @@
 
 您可以访问以下链接，直接在浏览器中体验本游戏：
 
-[在线试玩地址](https://www.google.com "2048game")
+[在线试玩地址](https://smilesnow819.github.io/2048game/ "2048game")
 
 🚀 快速启动
 
