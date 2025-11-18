@@ -68,7 +68,19 @@ export const saveGameState = (state: GameState): void => {
 // 从本地存储加载游戏状态
 export const loadGameState = (): GameState | null => {
   const savedState = localStorage.getItem('gameState');
-  return savedState ? JSON.parse(savedState) : null;
+  if (savedState) {
+    try {
+      const parsedState = JSON.parse(savedState);
+      // Basic validation to ensure the loaded state is somewhat correct
+      if (parsedState && parsedState.grid && parsedState.score !== undefined) {
+        return parsedState;
+      }
+    } catch (e) {
+      console.error('Could not parse game state from localStorage', e);
+      return null;
+    }
+  }
+  return null;
 };
 
 // 保存最高分到本地存储
