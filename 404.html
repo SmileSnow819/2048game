@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2048 Game - React + TypeScript</title>
+    <script>
+      // GitHub Pages SPA 重定向
+      const pathSegmentsToKeep = 1;
+      const l = window.location;
+      l.replace(
+        l.protocol +
+          '//' +
+          l.hostname +
+          (l.port ? ':' + l.port : '') +
+          l.pathname
+            .split('/')
+            .slice(0, 1 + pathSegmentsToKeep)
+            .join('/') +
+          '/?/' +
+          l.pathname
+            .slice(1)
+            .split('/')
+            .slice(pathSegmentsToKeep)
+            .join('/')
+            .replace(/&/g, '~and~') +
+          (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+          l.hash
+      );
+    </script>
+  </head>
+  <body>
+    <script>
+      // 如果重定向失败，直接跳转到根目录
+      setTimeout(function () {
+        window.location.href = '/2048game/';
+      }, 1000);
+    </script>
+    <p>正在重定向到 2048 游戏...</p>
+  </body>
+</html>
