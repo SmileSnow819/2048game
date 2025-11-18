@@ -1,4 +1,5 @@
 import React, { useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import type { Direction } from '../types/game';
 import { useGame } from '../hooks/useGame';
 import GameGrid from './GameGrid';
@@ -173,7 +174,34 @@ const GameController: React.FC = () => {
       <div style={gameMenuStyle}>
         <div style={gameMenuContainerStyle}>
           <div style={gamePointStyle}>
-            分数<span style={{ fontWeight: 800 }}>{gameState.score}</span>
+            分数
+            <div style={{ position: 'relative', display: 'inline-block' }}>
+              <span style={{ fontWeight: 800 }}>{gameState.score}</span>
+              <AnimatePresence>
+                {gameState.scoreAnimation && (
+                  <motion.span
+                    key={gameState.scoreAnimation.key}
+                    initial={{ opacity: 0, y: 0, scale: 1 }}
+                    animate={{ opacity: 1, y: -30, scale: 1.1 }}
+                    exit={{ opacity: 0, y: -50, scale: 0.8 }}
+                    transition={{ duration: 1, ease: 'easeOut' }}
+                    style={{
+                      position: 'absolute',
+                      left: '20px',
+                      top: '10px',
+                      marginLeft: '8px',
+                      color: '#f65e3b',
+                      fontWeight: 'bold',
+                      fontSize: '24px',
+                      whiteSpace: 'nowrap',
+                      textShadow: '1px 1px 2px rgba(0,0,0,0.6)',
+                    }}
+                  >
+                    +{gameState.scoreAnimation.points}
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
           <div style={gamePointStyle}>
             最高分

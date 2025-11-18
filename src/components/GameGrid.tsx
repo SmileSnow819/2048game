@@ -43,21 +43,29 @@ const GameGrid: React.FC<GameGridProps> = ({
       const newAnimatedBlocks: AnimatedBlock[] = [];
 
       moves.forEach(([[fromRow, fromCol], [toRow, toCol]]) => {
-        const value = grid[toRow][toCol];
-        if (value !== null) {
-          const isMerged = grid[fromRow][fromCol] !== value;
-          const isNew = fromRow === toRow && fromCol === toCol; // 新生成的块
+        // 添加边界检查，防止数组越界
+        if (toRow >= 0 && toRow < 4 && toCol >= 0 && toCol < 4) {
+          const value = grid[toRow][toCol];
+          if (value !== null) {
+            const isMerged =
+              fromRow >= 0 &&
+              fromRow < 4 &&
+              fromCol >= 0 &&
+              fromCol < 4 &&
+              grid[fromRow][fromCol] !== value;
+            const isNew = fromRow === toRow && fromCol === toCol; // 新生成的块
 
-          newAnimatedBlocks.push({
-            value,
-            fromRow,
-            fromCol,
-            toRow,
-            toCol,
-            isAnimating: true,
-            isMerged,
-            isNew,
-          });
+            newAnimatedBlocks.push({
+              value,
+              fromRow,
+              fromCol,
+              toRow,
+              toCol,
+              isAnimating: true,
+              isMerged,
+              isNew,
+            });
+          }
         }
       });
 

@@ -13,6 +13,10 @@ export interface GameState {
   isAnimating: boolean;
   moves: Move[];
   highestScore: number;
+  scoreAnimation?: {
+    points: number;
+    key: number;
+  };
 }
 
 export interface ShiftResult {

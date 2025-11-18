@@ -134,7 +134,6 @@ export const useGame = () => {
   // 前进一步
   const advance = useCallback(
     (command: Direction): AdvanceResult => {
-      console.log('Advance called with command:', command);
       const grid = deepCloneGrid(gameState.grid);
       const moves: Move[] = [];
       let points = 0;
@@ -146,10 +145,18 @@ export const useGame = () => {
           points += rowMove.points;
 
           for (const move of rowMove.moves) {
-            moves.push([
-              [i, move[0]],
-              [i, move[1]],
-            ]);
+            // 添加边界检查
+            if (
+              move[0] >= 0 &&
+              move[0] < GRID_SIZE &&
+              move[1] >= 0 &&
+              move[1] < GRID_SIZE
+            ) {
+              moves.push([
+                [i, move[0]],
+                [i, move[1]],
+              ]);
+            }
           }
         }
       } else if (command === 'up' || command === 'down') {
@@ -167,10 +174,18 @@ export const useGame = () => {
 
           // push二维点
           for (const move of colMove.moves) {
-            moves.push([
-              [move[0], i],
-              [move[1], i],
-            ]);
+            // 添加边界检查
+            if (
+              move[0] >= 0 &&
+              move[0] < GRID_SIZE &&
+              move[1] >= 0 &&
+              move[1] < GRID_SIZE
+            ) {
+              moves.push([
+                [move[0], i],
+                [move[1], i],
+              ]);
+            }
           }
 
           // 转置数组
@@ -179,8 +194,6 @@ export const useGame = () => {
           }
         }
       }
-
-      console.log('Advance: moves length =', moves.length, 'points =', points);
 
       if (moves.length !== 0) {
         generateNewBlock(grid);
@@ -204,6 +217,13 @@ export const useGame = () => {
         isAnimating: moves.length > 0,
         moves,
         highestScore: newHighestScore,
+        scoreAnimation:
+          points > 0
+            ? {
+                points,
+                key: Date.now(),
+              }
+            : undefined,
       };
 
       setGameState(newState);
@@ -232,6 +252,7 @@ export const useGame = () => {
       isAnimating: false,
       moves: [],
       highestScore: gameState.highestScore,
+      scoreAnimation: undefined,
     };
 
     setGameState(newState);
