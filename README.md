@@ -1,31 +1,73 @@
-# 2048 经典小游戏 (支持移动端滑动)
+# React + TypeScript + Vite
 
-一个基于原生 JavaScrip t实现的经典 2048 益智游戏。兼容桌面端和移动端设备。
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## 在线体验
+Currently, two official plugins are available:
 
-您可以访问以下链接，直接在浏览器中体验本游戏：
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-[在线试玩地址](https://smilesnow819.github.io/2048game/ "2048game")
+## React Compiler
 
-🚀 快速启动
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-本游戏无需任何复杂的构建工具或本地服务器，可以直接在浏览器中运行。
+## Expanding the ESLint configuration
 
-步骤 1: 克隆或下载项目
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-# 如果使用 Git
-git clone https://github.com/SmileSnow819/2048game
-# 否则，请直接下载项目 zip 文件并解压
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
 
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
 
-步骤 2: 启动游戏
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
 
-找到项目根目录下的 index.html 文件。
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-双击该文件，它将自动在您的默认浏览器中打开，即可开始游戏。
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
 
-
-🖼️ 截图预览
-
-![f7018b28d9255e1c8f268626ce0ada46](https://github.com/user-attachments/assets/a3af3e42-8ff2-49a0-a263-cda99b2540a9)
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
