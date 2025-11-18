@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Move } from '../types/game';
 import {
@@ -8,6 +8,7 @@ import {
   BLOCK_BACKGROUND_COLOR,
   BLOCK_SPACING,
   BLOCK_GRP,
+  GRID_SIZE,
 } from '../constants/game';
 
 interface GameGridProps {
@@ -84,9 +85,39 @@ const GameGrid: React.FC<GameGridProps> = ({
     }
   }, [isAnimating, moves, grid, onAnimationEnd]);
 
+  // 响应式格子大小计算
+  const { responsiveBlockWidth, responsiveCanvasSize, responsiveSpacing } =
+    useMemo(() => {
+      const isMobile = window.innerWidth <= 768;
+
+      if (isMobile) {
+        // 移动端：基于视口宽度计算合适的格子大小
+        const maxCanvasWidth = Math.min(window.innerWidth * 0.9, 500);
+        const responsiveBlockWidth = Math.floor(
+          (maxCanvasWidth - 60) / GRID_SIZE
+        );
+        const totalBlocksWidth =
+          GRID_SIZE * responsiveBlockWidth + (GRID_SIZE - 1) * BLOCK_GRP;
+        const responsiveSpacing = (maxCanvasWidth - totalBlocksWidth) / 2;
+
+        return {
+          responsiveBlockWidth,
+          responsiveCanvasSize: maxCanvasWidth,
+          responsiveSpacing,
+        };
+      }
+
+      // PC端：使用原始设置
+      return {
+        responsiveBlockWidth: BLOCK_WIDTH,
+        responsiveCanvasSize: CANVAS_SIZE,
+        responsiveSpacing: BLOCK_SPACING,
+      };
+    }, []);
+
   const containerStyle: React.CSSProperties = {
-    width: `${CANVAS_SIZE}px`,
-    height: `${CANVAS_SIZE}px`,
+    width: `${responsiveCanvasSize}px`,
+    height: `${responsiveCanvasSize}px`,
     backgroundColor: CANVAS_BACKGROUND_COLOR,
     borderRadius: '20px',
     position: 'relative',
@@ -101,13 +132,13 @@ const GameGrid: React.FC<GameGridProps> = ({
 
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
-        const top = i * (BLOCK_WIDTH + BLOCK_GRP) + BLOCK_SPACING;
-        const left = j * (BLOCK_WIDTH + BLOCK_GRP) + BLOCK_SPACING;
+        const top = i * (responsiveBlockWidth + BLOCK_GRP) + responsiveSpacing;
+        const left = j * (responsiveBlockWidth + BLOCK_GRP) + responsiveSpacing;
 
         const blockStyle: React.CSSProperties = {
           position: 'absolute',
-          width: `${BLOCK_WIDTH}px`,
-          height: `${BLOCK_WIDTH}px`,
+          width: `${responsiveBlockWidth}px`,
+          height: `${responsiveBlockWidth}px`,
           backgroundColor: BLOCK_BACKGROUND_COLOR,
           borderRadius: '5px',
           top: `${top}px`,
@@ -136,19 +167,26 @@ const GameGrid: React.FC<GameGridProps> = ({
         );
 
         if (value !== null && !isAnimating) {
-          const top = i * (BLOCK_WIDTH + BLOCK_GRP) + BLOCK_SPACING;
-          const left = j * (BLOCK_WIDTH + BLOCK_GRP) + BLOCK_SPACING;
+          const top =
+            i * (responsiveBlockWidth + BLOCK_GRP) + responsiveSpacing;
+          const left =
+            j * (responsiveBlockWidth + BLOCK_GRP) + responsiveSpacing;
 
           const blockStyle: React.CSSProperties = {
             position: 'absolute',
-            width: `${BLOCK_WIDTH}px`,
-            height: `${BLOCK_WIDTH}px`,
+            width: `${responsiveBlockWidth}px`,
+            height: `${responsiveBlockWidth}px`,
             backgroundColor: getBlockColor(value),
             borderRadius: '5px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '50px',
+            fontSize:
+              responsiveBlockWidth >= 100
+                ? '50px'
+                : responsiveBlockWidth >= 80
+                ? '40px'
+                : '30px',
             fontWeight: 'bold',
             color: getTextColor(value),
             zIndex: 5,
@@ -173,22 +211,30 @@ const GameGrid: React.FC<GameGridProps> = ({
   // 渲染动画方块
   const renderAnimatedBlocks = () => {
     return animatedBlocks.map((block, index) => {
-      const fromTop = block.fromRow * (BLOCK_WIDTH + BLOCK_GRP) + BLOCK_SPACING;
+      const fromTop =
+        block.fromRow * (responsiveBlockWidth + BLOCK_GRP) + responsiveSpacing;
       const fromLeft =
-        block.fromCol * (BLOCK_WIDTH + BLOCK_GRP) + BLOCK_SPACING;
-      const toTop = block.toRow * (BLOCK_WIDTH + BLOCK_GRP) + BLOCK_SPACING;
-      const toLeft = block.toCol * (BLOCK_WIDTH + BLOCK_GRP) + BLOCK_SPACING;
+        block.fromCol * (responsiveBlockWidth + BLOCK_GRP) + responsiveSpacing;
+      const toTop =
+        block.toRow * (responsiveBlockWidth + BLOCK_GRP) + responsiveSpacing;
+      const toLeft =
+        block.toCol * (responsiveBlockWidth + BLOCK_GRP) + responsiveSpacing;
 
       const blockStyle: React.CSSProperties = {
         position: 'absolute',
-        width: `${BLOCK_WIDTH}px`,
-        height: `${BLOCK_WIDTH}px`,
+        width: `${responsiveBlockWidth}px`,
+        height: `${responsiveBlockWidth}px`,
         backgroundColor: getBlockColor(block.value),
         borderRadius: '5px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontSize: '50px',
+        fontSize:
+          responsiveBlockWidth >= 100
+            ? '50px'
+            : responsiveBlockWidth >= 80
+            ? '40px'
+            : '30px',
         fontWeight: 'bold',
         color: getTextColor(block.value),
         zIndex: 6,
