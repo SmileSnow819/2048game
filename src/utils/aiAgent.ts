@@ -145,9 +145,6 @@ const evaluateNode = (state: SimulationState, depth: number): number => {
   return best === -Infinity ? state.score : best;
 };
 
-const now = (): number =>
-  typeof performance !== 'undefined' ? performance.now() : Date.now();
-
 export const evaluateBestMove = (
   gameState: GameState,
   depth = 5
@@ -159,7 +156,6 @@ export const evaluateBestMove = (
 
   let bestMove: Direction | null = null;
   let bestScore = -Infinity;
-  const start = now();
 
   for (const direction of DIRECTIONS) {
     const result = simulate(state, direction);
@@ -167,10 +163,7 @@ export const evaluateBestMove = (
 
     const projected =
       depth > 1
-        ? evaluateNode(
-            { grid: result.grid, score: result.score },
-            depth - 1
-          )
+        ? evaluateNode({ grid: result.grid, score: result.score }, depth - 1)
         : result.score;
 
     if (projected > bestScore) {
@@ -185,4 +178,3 @@ export const evaluateBestMove = (
 
   return null;
 };
-
