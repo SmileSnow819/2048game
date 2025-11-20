@@ -2,6 +2,8 @@
 
 一个使用 React + TypeScript + Vite 构建的 2048 游戏。
 
+**访问地址：** https://smilesnow819.github.io/2048game/
+
 ## 功能特性
 
 - 🎮 经典的 2048 游戏玩法
@@ -42,7 +44,6 @@ npm run preview
 
 项目已配置 GitHub Actions 工作流，当代码推送到 `main` 分支时会自动构建并部署到 GitHub Pages。
 
-**访问地址：** https://smilesnow819.github.io/2048game/
 
 ### 部署流程
 
