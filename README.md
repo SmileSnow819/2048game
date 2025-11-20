@@ -1,6 +1,7 @@
 # 2048 Game - React + TypeScript
 
 一个使用 React + TypeScript + Vite 构建的 2048 游戏。
+
 **访问地址：** https://smilesnow819.github.io/2048game/
 
 ## 功能特性
