@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import type {
   Grid,
   Direction,
@@ -67,6 +67,12 @@ export const useGame = () => {
     };
   });
 
+  const gameStateRef = useRef<GameState>(gameState);
+
+  useEffect(() => {
+    gameStateRef.current = gameState;
+  }, [gameState]);
+
   // 生成新方块
   const generateNewBlock = useCallback((grid: Grid): void => {
     const possiblePositions: [number, number][] = [];
@@ -134,7 +140,8 @@ export const useGame = () => {
   // 前进一步
   const advance = useCallback(
     (command: Direction): AdvanceResult => {
-      const grid = deepCloneGrid(gameState.grid);
+      const currentState = gameStateRef.current;
+      const grid = deepCloneGrid(currentState.grid);
       const moves: Move[] = [];
       let points = 0;
       const isReverse = command === 'right' || command === 'down';
@@ -199,13 +206,13 @@ export const useGame = () => {
         generateNewBlock(grid);
       }
 
-      const newScore = gameState.score + points;
-      const newSteps = gameState.steps + (moves.length > 0 ? 1 : 0);
+      const newScore = currentState.score + points;
+      const newSteps = currentState.steps + (moves.length > 0 ? 1 : 0);
       const gameOver = isGameOver(grid);
 
       // 更新最高分
-      const newHighestScore = Math.max(gameState.highestScore, newScore);
-      if (newHighestScore > gameState.highestScore) {
+      const newHighestScore = Math.max(currentState.highestScore, newScore);
+      if (newHighestScore > currentState.highestScore) {
         saveHighestScore(newHighestScore);
       }
 
@@ -235,7 +242,7 @@ export const useGame = () => {
         steps: newSteps,
       };
     },
-    [gameState, shiftBlock, generateNewBlock]
+    [shiftBlock, generateNewBlock]
   );
 
   // 初始化游戏

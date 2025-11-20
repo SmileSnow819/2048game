@@ -1,11 +1,18 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Direction } from '../types/game';
 import { useGame } from '../hooks/useGame';
 import GameGrid from './GameGrid';
+import { useAIAgent } from '../hooks/useAIAgent';
 
 const GameController: React.FC = () => {
   const { gameState, advance, initializeGame, setAnimating } = useGame();
+  const { playAI, stopAI, isAIRunning, lastDecision } = useAIAgent(
+    gameState,
+    advance,
+    { depth: 5, stepDelay: 260 }
+  );
+  const swipeAreaRef = useRef<HTMLDivElement | null>(null);
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -42,6 +49,8 @@ const GameController: React.FC = () => {
     (event: TouchEvent) => {
       if (gameState.isAnimating || gameState.gameOver) return;
 
+      event.preventDefault();
+
       const touchStartX = event.touches[0].clientX;
       const touchStartY = event.touches[0].clientY;
 
@@ -75,21 +84,38 @@ const GameController: React.FC = () => {
           advance(direction);
         }
 
-        document.removeEventListener('touchend', handleTouchEnd);
+        window.removeEventListener('touchend', handleTouchEnd);
+        window.removeEventListener('touchmove', handleTouchMove);
       };
 
-      document.addEventListener('touchend', handleTouchEnd, { once: true });
+      const handleTouchMove = (moveEvent: TouchEvent) => {
+        moveEvent.preventDefault();
+      };
+
+      window.addEventListener('touchmove', handleTouchMove, { passive: false });
+      window.addEventListener('touchend', handleTouchEnd, { once: true });
     },
     [gameState.isAnimating, gameState.gameOver, advance]
   );
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('touchstart', handleTouchStart);
+
+    const swipeArea = swipeAreaRef.current;
+    const touchOptions: AddEventListenerOptions = { passive: false };
+    if (swipeArea) {
+      swipeArea.addEventListener('touchstart', handleTouchStart, touchOptions);
+    }
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      document.removeEventListener('touchstart', handleTouchStart);
+      if (swipeArea) {
+        swipeArea.removeEventListener(
+          'touchstart',
+          handleTouchStart,
+          touchOptions
+        );
+      }
     };
   }, [handleKeyDown, handleTouchStart]);
 
@@ -123,6 +149,14 @@ const GameController: React.FC = () => {
     ...gamePointStyle,
     cursor: 'pointer',
   };
+
+  const handleAIClick = useCallback(() => {
+    if (isAIRunning) {
+      stopAI();
+    } else {
+      playAI(10);
+    }
+  }, [isAIRunning, playAI, stopAI]);
 
   // 移除未使用的hoverButtonStyle
 
@@ -224,16 +258,55 @@ const GameController: React.FC = () => {
           >
             <span style={{ fontWeight: 800 }}>再来一局</span>
           </div>
+          <div
+            style={{
+              ...clickableButtonStyle,
+              backgroundColor: isAIRunning
+                ? '#8f7a66'
+                : clickableButtonStyle.backgroundColor,
+            }}
+            onClick={handleAIClick}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = isAIRunning
+                ? '#a08b72'
+                : 'rgb(187, 161, 136)';
+              e.currentTarget.style.transform = 'translateY(-2px)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = isAIRunning
+                ? '#8f7a66'
+                : 'rgb(167, 141, 116)';
+              e.currentTarget.style.transform = '';
+            }}
+          >
+            <span style={{ fontWeight: 800 }}>
+              {isAIRunning ? '停止 AI' : 'AI 走 10 步'}
+            </span>
+            {lastDecision && (
+              <span
+                style={{
+                  fontSize: '14px',
+                  marginTop: '4px',
+                  fontWeight: 400,
+                }}
+              >
+                上次方向: {lastDecision.move} 预测得分:≈{' '}
+                {lastDecision.projectedScore}
+              </span>
+            )}
+          </div>
         </div>
       </div>
 
       {/* 游戏网格 */}
-      <GameGrid
-        grid={gameState.grid}
-        moves={gameState.moves}
-        isAnimating={gameState.isAnimating}
-        onAnimationEnd={handleAnimationEnd}
-      />
+      <div ref={swipeAreaRef}>
+        <GameGrid
+          grid={gameState.grid}
+          moves={gameState.moves}
+          isAnimating={gameState.isAnimating}
+          onAnimationEnd={handleAnimationEnd}
+        />
+      </div>
 
       {/* 游戏信息 */}
       <div style={gameInfoStyle}>
